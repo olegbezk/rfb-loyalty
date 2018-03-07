@@ -7,6 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
+      # add additional install jobs to local env
       - image: springframeworkguru/circleci_build
 
       # Specify service dependencies here if necessary
