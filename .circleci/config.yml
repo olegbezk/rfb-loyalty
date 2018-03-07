@@ -42,7 +42,7 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # run tests and package
-      - run: ./gradlew clean test --no-daemon --max-workers 2
+      - run: ./gradlew clean test --scan
 
       - run:
           name: Save test results
@@ -63,4 +63,4 @@ jobs:
 
       - run:
           name: Build Docker Image
-          command: ./gradlew bootRepackage -Pprod pushDockerLatest pushDockerVersionTag -x test --no-daemon --max-workers 2
+          command: ./gradlew bootRepackage -Pprod pushDockerLatest pushDockerVersionTag -x test
