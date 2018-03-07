@@ -141,6 +141,23 @@ To achieve this, first build a docker image of your app by running:
 Then run:
 
     docker-compose -f src/main/docker/app.yml up -d
+    
+Pushing docker image to the [DockerHub](https://hub.docker.com) task set up for this project in CI task,
+but you can push image to the local docker registry and to the [DockerHub](https://hub.docker.com) manually:
+
+### MacOs:
+
+1.Set up in `.bash_profile` environment variable:
+    
+    export DOCKER_HUB_PWD="<your_docker_hub_pwd>"
+    
+2.Login to the docker with:
+
+    $ docker login    
+    
+3.Execute command in the project root directory:
+
+    $ ./gradlew bootRepackage -Pprod pushDockerLatest pushDockerVersionTag -x test
 
 For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
 
