@@ -2,20 +2,32 @@ package com.rfb.repository;
 
 import com.rfb.RfbLoyaltyApp;
 import com.rfb.domain.SocialUserConnection;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.social.connect.*;
+import org.springframework.social.connect.ApiAdapter;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionData;
+import org.springframework.social.connect.ConnectionKey;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.ConnectionValues;
+import org.springframework.social.connect.NoSuchConnectionException;
+import org.springframework.social.connect.NotConnectedException;
+import org.springframework.social.connect.UserProfile;
+import org.springframework.social.connect.UserProfileBuilder;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
 import org.springframework.social.connect.support.OAuth1ConnectionFactory;
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1ServiceProvider;
-import org.springframework.social.oauth2.*;
+import org.springframework.social.oauth2.AccessGrant;
+import org.springframework.social.oauth2.GrantType;
+import org.springframework.social.oauth2.OAuth2Operations;
+import org.springframework.social.oauth2.OAuth2Parameters;
+import org.springframework.social.oauth2.OAuth2ServiceProvider;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -27,7 +39,9 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RfbLoyaltyApp.class)
@@ -47,7 +61,7 @@ public class CustomSocialUsersConnectionRepositoryIntTest {
 
     @Before
     public void setUp() {
-		socialUserConnectionRepository.deleteAll();
+        socialUserConnectionRepository.deleteAll();
 
         connectionFactoryRegistry = new ConnectionFactoryRegistry();
         connectionFactory = new TestFacebookConnectionFactory();
@@ -74,7 +88,9 @@ public class CustomSocialUsersConnectionRepositoryIntTest {
         insertFacebookConnection();
         insertFacebookConnectionSameFacebookUser();
         List<String> localUserIds = usersConnectionRepository.findUserIdsWithConnection(connectionRepository.getPrimaryConnection(TestFacebookApi.class));
-        assertThat(localUserIds).containsExactly("1", "2");
+        assertEquals(2, localUserIds.size());
+        assertEquals("1", localUserIds.get(0));
+        assertEquals("2", localUserIds.get(1));
     }
 
     @Test
@@ -170,8 +186,8 @@ public class CustomSocialUsersConnectionRepositoryIntTest {
         providerUsers.add("twitter", "1");
         MultiValueMap<String, Connection<?>> connectionsForUsers = connectionRepository.findConnectionsToUsers(providerUsers);
         assertEquals(2, connectionsForUsers.size());
-        String providerId=connectionsForUsers.getFirst("facebook").getKey().getProviderUserId();
-        assertTrue("10".equals(providerId) || "9".equals(providerId) );
+        String providerId = connectionsForUsers.getFirst("facebook").getKey().getProviderUserId();
+        assertTrue("10".equals(providerId) || "9".equals(providerId));
         assertFacebookConnection((Connection<TestFacebookApi>) connectionRepository.getConnection(new ConnectionKey("facebook", "9")));
         assertTwitterConnection((Connection<TestTwitterApi>) connectionsForUsers.getFirst("twitter"));
     }
@@ -314,77 +330,77 @@ public class CustomSocialUsersConnectionRepositoryIntTest {
 
     private SocialUserConnection insertTwitterConnection() {
         return createExistingSocialUserConnection(
-            "1",
-            "twitter",
-            "1",
-            1L,
-            "@kdonald",
-            "http://twitter.com/kdonald",
-            "http://twitter.com/kdonald/picture",
-            "123456789",
-            "987654321",
-            null,
-            null
+                "1",
+                "twitter",
+                "1",
+                1L,
+                "@kdonald",
+                "http://twitter.com/kdonald",
+                "http://twitter.com/kdonald/picture",
+                "123456789",
+                "987654321",
+                null,
+                null
         );
     }
 
     private SocialUserConnection insertFacebookConnection() {
         return createExistingSocialUserConnection(
-            "1",
-            "facebook",
-            "9",
-            1L,
-            null,
-            null,
-            null,
-            "234567890",
-            null,
-            "345678901",
-            System.currentTimeMillis() + 3600000);
+                "1",
+                "facebook",
+                "9",
+                1L,
+                null,
+                null,
+                null,
+                "234567890",
+                null,
+                "345678901",
+                System.currentTimeMillis() + 3600000);
     }
 
     private SocialUserConnection insertFacebookConnection2() {
         return createExistingSocialUserConnection(
-            "1",
-            "facebook",
-            "10",
-            2L,
-            null,
-            null,
-            null,
-            "456789012",
-            null,
-            "56789012",
-            System.currentTimeMillis() + 3600000);
+                "1",
+                "facebook",
+                "10",
+                2L,
+                null,
+                null,
+                null,
+                "456789012",
+                null,
+                "56789012",
+                System.currentTimeMillis() + 3600000);
     }
 
     private SocialUserConnection insertFacebookConnection3() {
         return createExistingSocialUserConnection(
-            "2",
-            "facebook",
-            "11", 2L,
-            null,
-            null,
-            null,
-            "456789012",
-            null,
-            "56789012",
-            System.currentTimeMillis() + 3600000);
+                "2",
+                "facebook",
+                "11", 2L,
+                null,
+                null,
+                null,
+                "456789012",
+                null,
+                "56789012",
+                System.currentTimeMillis() + 3600000);
     }
 
     private SocialUserConnection insertFacebookConnectionSameFacebookUser() {
         return createExistingSocialUserConnection(
-            "2",
-            "facebook",
-            "9",
-            1L,
-            null,
-            null,
-            null,
-            "234567890",
-            null,
-            "345678901",
-            System.currentTimeMillis() + 3600000);
+                "2",
+                "facebook",
+                "9",
+                1L,
+                null,
+                null,
+                null,
+                "234567890",
+                null,
+                "345678901",
+                System.currentTimeMillis() + 3600000);
     }
 
     private SocialUserConnection createExistingSocialUserConnection(String userId,
@@ -399,17 +415,17 @@ public class CustomSocialUsersConnectionRepositoryIntTest {
                                                                     String refreshToken,
                                                                     Long expireTime) {
         SocialUserConnection socialUserConnectionToSabe = new SocialUserConnection(
-            userId,
-            providerId,
-            providerUserId,
-            rank,
-            displayName,
-            profileURL,
-            imageURL,
-            accessToken,
-            secret,
-            refreshToken,
-            expireTime);
+                userId,
+                providerId,
+                providerUserId,
+                rank,
+                displayName,
+                profileURL,
+                imageURL,
+                accessToken,
+                secret,
+                refreshToken,
+                expireTime);
         return socialUserConnectionRepository.save(socialUserConnectionToSabe);
     }
 
@@ -464,6 +480,7 @@ public class CustomSocialUsersConnectionRepositoryIntTest {
 
         public OAuth2Operations getOAuthOperations() {
             return new OAuth2Operations() {
+
                 public String buildAuthorizeUrl(GrantType grantType, OAuth2Parameters params) {
                     return null;
                 }
@@ -565,6 +582,7 @@ public class CustomSocialUsersConnectionRepositoryIntTest {
 
         public TestTwitterApi getApi(final String accessToken, final String secret) {
             return new TestTwitterApi() {
+
                 public String getAccessToken() {
                     return accessToken;
                 }

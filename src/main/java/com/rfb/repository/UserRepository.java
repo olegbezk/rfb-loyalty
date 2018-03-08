@@ -1,5 +1,6 @@
 package com.rfb.repository;
 
+import com.rfb.domain.Authority;
 import com.rfb.domain.User;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -33,7 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneByLogin(String login);
 
     @EntityGraph(attributePaths = "authorities")
-    Optional<User> findOneWithAuthoritiesById(Long id);
+    User findOneWithAuthoritiesById(Long id);
 
     @EntityGraph(attributePaths = "authorities")
     @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
@@ -44,4 +45,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneWithAuthoritiesByEmail(String email);
 
     Page<User> findAllByLoginNot(Pageable pageable, String login);
+
+    Optional<User> findOneByEmail(String email);
+
+    Page<User> findAllByAuthoritiesEquals(Pageable pageable, Authority one);
 }
