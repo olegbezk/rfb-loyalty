@@ -12,7 +12,7 @@ import org.mapstruct.*;
 public interface RfbLocationMapper extends EntityMapper<RfbLocationDTO, RfbLocation> {
 
 
-    @Mapping(target = "rbfEvents", ignore = true)
+    @Mapping(target = "rfbEvents", ignore = true)
     RfbLocation toEntity(RfbLocationDTO rfbLocationDTO);
 
     default RfbLocation fromId(Long id) {

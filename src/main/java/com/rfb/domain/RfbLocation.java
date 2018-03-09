@@ -34,7 +34,7 @@ public class RfbLocation implements Serializable {
     @OneToMany(mappedBy = "rfbLocation")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<RfbEvent> rbfEvents = new HashSet<>();
+    private Set<RfbEvent> rfbEvents = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -71,29 +71,29 @@ public class RfbLocation implements Serializable {
         this.runDayOfWeek = runDayOfWeek;
     }
 
-    public Set<RfbEvent> getRbfEvents() {
-        return rbfEvents;
+    public Set<RfbEvent> getRfbEvents() {
+        return rfbEvents;
     }
 
-    public RfbLocation rbfEvents(Set<RfbEvent> rfbEvents) {
-        this.rbfEvents = rfbEvents;
+    public RfbLocation rfbEvents(final Set<RfbEvent> rfbEvents) {
+        this.rfbEvents = rfbEvents;
         return this;
     }
 
-    public RfbLocation addRbfEvent(RfbEvent rfbEvent) {
-        this.rbfEvents.add(rfbEvent);
+    public RfbLocation addRfbEvent(final RfbEvent rfbEvent) {
+        this.rfbEvents.add(rfbEvent);
         rfbEvent.setRfbLocation(this);
         return this;
     }
 
-    public RfbLocation removeRbfEvent(RfbEvent rfbEvent) {
-        this.rbfEvents.remove(rfbEvent);
+    public RfbLocation removeRbfEvent(final RfbEvent rfbEvent) {
+        this.rfbEvents.remove(rfbEvent);
         rfbEvent.setRfbLocation(null);
         return this;
     }
 
-    public void setRbfEvents(Set<RfbEvent> rfbEvents) {
-        this.rbfEvents = rfbEvents;
+    public void setRfbEvents(final Set<RfbEvent> rfbEvents) {
+        this.rfbEvents = rfbEvents;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
