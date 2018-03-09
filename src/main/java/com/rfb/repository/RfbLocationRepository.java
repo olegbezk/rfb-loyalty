@@ -15,4 +15,6 @@ import java.util.List;
 public interface RfbLocationRepository extends JpaRepository<RfbLocation, Long> {
 
     List<RfbLocation> findAllByRunDayOfWeek(int value);
+
+    RfbLocation findByLocationName(String name);
 }
