@@ -342,7 +342,7 @@ public class UserResourceIntTest {
         User updatedUser = userRepository.findOne(user.getId());
 
         Set<String> authorities = new HashSet<>();
-        authorities.add("ROLE_RUNNER");
+        authorities.add("ROLE_ADMIN");
         ManagedUserVM managedUserVM = new ManagedUserVM(
                 updatedUser.getId(),
                 updatedUser.getLogin(),
@@ -387,7 +387,7 @@ public class UserResourceIntTest {
         User updatedUser = userRepository.findOne(user.getId());
 
         Set<String> authorities = new HashSet<>();
-        authorities.add("ROLE_RUNNER");
+        authorities.add("ROLE_ADMIN");
         ManagedUserVM managedUserVM = new ManagedUserVM(
                 updatedUser.getId(),
                 UPDATED_LOGIN,
@@ -538,7 +538,7 @@ public class UserResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$").value(containsInAnyOrder("ROLE_RUNNER", "ROLE_ORGANIZER", "ROLE_ADMIN")));
+                .andExpect(jsonPath("$").value(containsInAnyOrder("ROLE_USER", "ROLE_ADMIN")));
     }
 
     @Test
